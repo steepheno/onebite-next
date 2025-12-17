@@ -14,6 +14,6 @@ export default async function fetchOneBook(
     return await response.json();
   } catch (err) {
     console.error(err);
-    throw null;
+    return null;
   }
 }
