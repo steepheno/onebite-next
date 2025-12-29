@@ -4,12 +4,14 @@ import { BookData } from '@/types';
 export default async function Page({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     q?: string;
-  };
+  }>;
 }) {
+  const params = await searchParams;
+
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/book/search?q=${searchParams.q}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/book/search?q=${params.q}`,
   );
 
   if (!response.ok) {
