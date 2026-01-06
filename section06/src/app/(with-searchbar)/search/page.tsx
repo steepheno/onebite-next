@@ -2,6 +2,7 @@ import BookItem from '@/components/book-item';
 import BookListSkeleton from '@/components/skeleton/book-list-skeleton';
 import { BookData } from '@/types';
 import { delay } from '@/util/delay';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 async function SearchResult({ q }: { q: string }) {
@@ -26,6 +27,27 @@ async function SearchResult({ q }: { q: string }) {
   );
 }
 
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    q?: string;
+  }>;
+}): Promise<Metadata> {
+  // 현재 페이지의 메타 데이터를 동적으로 생성하는 역할
+  const params = await searchParams;
+
+  return {
+    title: `${params.q}: 한입 북스 검색`,
+    description: `${params.q}의 검색 결과입니다.`,
+    openGraph: {
+      title: `${params.q}: 한입 북스 검색`,
+      description: `${params.q}의 검색 결과입니다.`,
+      images: ['/thumbnail.png'],
+    },
+  };
+}
+
 export default async function Page({
   searchParams,
 }: {
@@ -36,10 +58,7 @@ export default async function Page({
   const params = await searchParams;
 
   return (
-    <Suspense
-      key={params.q || ''}
-      fallback={<BookListSkeleton count={3} />}
-    >
+    <Suspense key={params.q || ''} fallback={<BookListSkeleton count={3} />}>
       <SearchResult q={params.q || ''} />
     </Suspense>
   );
